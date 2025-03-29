@@ -1,0 +1,17 @@
+# Node.js (Frontend)
+node_modules/
+.next/
+.env
+
+# Python (Backend)
+__pycache__/
+venv/
+instance/
+.env
+
+# Logs
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
