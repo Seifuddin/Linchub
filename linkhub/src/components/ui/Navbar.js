@@ -7,10 +7,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-950 fixed w-full top-0 left-0 z-50 shadow-md border-b-2 border-b-orange-500">
+    <nav className="bg-orange-700 fixed w-full top-0 left-0 z-50 shadow-md border-b-2 border-b-orange-500">
       <div className="max-w-screen-xl mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <div className="flex text-orange-400 font-bold text-xl">
+          <div className="flex text-yellow-300 font-bold text-xl">
             LincHub Laptops
           </div>
           <div className="lg:hidden">
@@ -36,13 +36,13 @@ export default function Navbar() {
             <Link href="/" className="text-white hover:text-gray-400">
               Home
             </Link>
-            <Link href="/contacts" className="text-white hover:text-gray-400">
+            <Link href="/add" className="text-white hover:text-gray-400">
               Add 
             </Link>
-            <Link href="/chat" className="text-white hover:text-gray-400">
+            <Link href="/search" className="text-white hover:text-gray-400">
               Search
             </Link>
-            <Link href="/services" className="text-white hover:text-gray-400">
+            <Link href="/report" className="text-white hover:text-gray-400">
               Report
             </Link>
           </div>
@@ -54,17 +54,14 @@ export default function Navbar() {
           <Link href="/" className="block">
             Home
           </Link>
-          <Link href="/about" className="block">
-            About
+          <Link href="/add" className="block">
+            Add
           </Link>
-          <Link href="/chat" className="block">
-            Chat
+          <Link href="/search" className="block">
+            Search
           </Link>
-          <Link href="/services" className="block">
-            Services
-          </Link>
-          <Link href="/contacts" className="block">
-            Contact
+          <Link href="/report" className="block">
+            Report
           </Link>
         </div>
       )}

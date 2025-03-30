@@ -56,11 +56,50 @@ def search_computers():
 @app.route("/delete_computer/<int:comp_id>", methods=["DELETE"])
 def delete_computer(comp_id):
     try:
+        # Fetch the computer details before deleting
+        cursor.execute("SELECT brand, name, processor, ram, capacity, serial FROM computers WHERE id = %s", (comp_id,))
+        computer = cursor.fetchone()
+
+        if not computer:
+            return jsonify({"error": "Computer not found"}), 404
+        
+        # Insert into sold_laptops with current timestamp
+        cursor.execute(
+            "INSERT INTO sold_laptops (brand, name, processor, ram, capacity, serial, sold_date) VALUES (%s, %s, %s, %s, %s, %s, NOW())",
+            (computer[0], computer[1], computer[2], computer[3], computer[4], computer[5])
+        )
+        db.commit()
+
+        # Delete from computers table
         cursor.execute("DELETE FROM computers WHERE id = %s", (comp_id,))
         db.commit()
-        return jsonify({"message": "Computer deleted successfully"}), 200
+
+        return jsonify({"message": "Computer moved to sold laptops and deleted from computers"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/sold_laptops", methods=["GET"])
+def get_sold_laptops():
+    cursor = db.cursor()  # Use your db connection
+    cursor.execute("SELECT id, brand, name, serial, processor, ram, capacity, sold_date FROM sold_laptops")
+    sold_laptops = cursor.fetchall()
+    cursor.close()
+
+    laptops = []
+    for laptop in sold_laptops:
+        formatted_date = laptop[7].strftime("%Y-%m-%d %H:%M:%S") if laptop[7] else "Unknown"
+        laptops.append({
+            "id": laptop[0],
+            "brand": laptop[1],
+            "name": laptop[2],
+            "serial": laptop[3],
+            "processor": laptop[4],
+            "ram": laptop[5],
+            "capacity": laptop[6],
+            "sold_date": formatted_date
+        })
+
+    return jsonify(laptops)       
 
 if __name__ == '__main__':
     app.run(debug=True)

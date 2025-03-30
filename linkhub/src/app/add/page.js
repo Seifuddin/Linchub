@@ -32,7 +32,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg--100 flex flex-col items-center p-6 mt-14">
+    <div className="mt-10 min-h-screen bg--100 flex flex-col items-center p-6 mt-14 bg-gradient-to-r from-blue-500 to-purple-600">
       {/* Navigation */}
       <nav className="w-full max-w-3xl bg-white shadow-md p-4 flex justify-between rounded-xl mb-6">
         <h1 className="text-xl font-bold text-orange-600">Computer Inventory</h1>
@@ -44,7 +44,7 @@ export default function Home() {
       {/* Form Card */}
       <Card className="w-full max-w-3xl">
         <CardContent className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-center">Add a Computer</h2>
+          <h2 className="text-3xl font-bold text-center">Add a Computer</h2>
           <form className="space-y-3" onSubmit={handleSubmit}>
             <Input placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
             <Input placeholder="Serial" value={serial} onChange={(e) => setSerial(e.target.value)} />
