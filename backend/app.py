@@ -104,4 +104,5 @@ def get_sold_laptops():
     return jsonify(laptops)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    from os import getenv
+    app.run(debug=getenv('FLASK_DEBUG', False))
