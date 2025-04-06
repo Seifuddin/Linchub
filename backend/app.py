@@ -40,23 +40,36 @@ def add_computer():
 @app.route('/search_computers', methods=['GET'])
 def search_computers():
     name = request.args.get('name', '')
-    cursor.execute("SELECT id, brand, name, processor, ram, capacity, shelf, serial FROM computers WHERE name LIKE %s", ('%' + name + '%',))
-    results = cursor.fetchall()
+    cursor = db.cursor()  # 🔁 Create a new cursor for this request
 
-    computers = []
-    for row in results:
-        computers.append({
-            "id": row[0],
-            "brand": row[1],
-            "name": row[2],
-            "processor": row[3],
-            "ram": row[4],
-            "capacity": row[5],
-            "shelf": row[6],
-            "serial": row[7]
-        })
+    try:
+        cursor.execute(
+            "SELECT id, brand, name, processor, ram, capacity, shelf, serial FROM computers WHERE name LIKE %s",
+            ('%' + name + '%',)
+        )
+        results = cursor.fetchall()
 
-    return jsonify(computers)
+        computers = []
+        for row in results:
+            computers.append({
+                "id": row[0],
+                "brand": row[1],
+                "name": row[2],
+                "processor": row[3],
+                "ram": row[4],
+                "capacity": row[5],
+                "shelf": row[6],
+                "serial": row[7]
+            })
+
+        return jsonify(computers)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()  # ✅ Always close the cursor
+
 
 # ❌ Delete a computer and move to sold_laptops
 @app.route("/delete_computer/<int:comp_id>", methods=["DELETE"])
