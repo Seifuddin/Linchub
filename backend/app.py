@@ -5,39 +5,44 @@ import mysql.connector
 app = Flask(__name__)
 CORS(app)
 
-# Database connection
+# 🔗 Remote Database connection (update these values)
 db = mysql.connector.connect(
-    host="localhost",
-    user="colonel",
-    password="@Gsu2024",
-    database="linkhub"
+    host="sql7.freesqldatabase.com",     # <-- replace with your DB host
+    user="sql7771691",            # <-- replace with your DB username
+    password="PvMsXEv6BW",        # <-- replace with your DB password
+    database="sql7771691",            # <-- replace with your DB name
+    port=3306                           # optional, 3306 is default
 )
 
 cursor = db.cursor()
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Flask Backend is Running!"})
+    return jsonify({"message": "Flask Backend is Running with Remote DB!"})
 
-# Add a computer
+# ➕ Add a computer
 @app.route('/add_computer', methods=['POST'])
 def add_computer():
     data = request.json
-    cursor.execute(
-        "INSERT INTO computers (brand, name, processor, ram, capacity, shelf, serial) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-        (data['brand'], data['name'], data['processor'], data['ram'], data['capacity'], data['shelf'], data['serial'])
-    )
-    db.commit()
-    return jsonify({"message": "Computer added successfully!"})
+    try:
+        cursor.execute(
+            "INSERT INTO computers (brand, name, processor, ram, capacity, shelf, serial) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (data['brand'], data['name'], data['processor'], data['ram'], data['capacity'], data['shelf'], data['serial'])
+        )
+        db.commit()
+        return jsonify({"message": "Computer added successfully!"})
+    except mysql.connector.IntegrityError as e:
+        if "Duplicate entry" in str(e):
+            return jsonify({"error": "Serial number already exists!"}), 400
+        return jsonify({"error": str(e)}), 500
 
-# Search for computers by name     
+# 🔍 Search for computers by name     
 @app.route('/search_computers', methods=['GET'])
 def search_computers():
     name = request.args.get('name', '')
     cursor.execute("SELECT id, brand, name, processor, ram, capacity, shelf, serial FROM computers WHERE name LIKE %s", ('%' + name + '%',))
     results = cursor.fetchall()
 
-    # Structure results properly
     computers = []
     for row in results:
         computers.append({
@@ -53,24 +58,22 @@ def search_computers():
 
     return jsonify(computers)
 
+# ❌ Delete a computer and move to sold_laptops
 @app.route("/delete_computer/<int:comp_id>", methods=["DELETE"])
 def delete_computer(comp_id):
     try:
-        # Fetch the computer details before deleting
         cursor.execute("SELECT brand, name, processor, ram, capacity, serial FROM computers WHERE id = %s", (comp_id,))
         computer = cursor.fetchone()
 
         if not computer:
             return jsonify({"error": "Computer not found"}), 404
-        
-        # Insert into sold_laptops with current timestamp
+
         cursor.execute(
             "INSERT INTO sold_laptops (brand, name, processor, ram, capacity, serial, sold_date) VALUES (%s, %s, %s, %s, %s, %s, NOW())",
             (computer[0], computer[1], computer[2], computer[3], computer[4], computer[5])
         )
         db.commit()
 
-        # Delete from computers table
         cursor.execute("DELETE FROM computers WHERE id = %s", (comp_id,))
         db.commit()
 
@@ -78,12 +81,11 @@ def delete_computer(comp_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# 📦 Get all sold laptops
 @app.route("/sold_laptops", methods=["GET"])
 def get_sold_laptops():
-    cursor = db.cursor()  # Use your db connection
     cursor.execute("SELECT id, brand, name, serial, processor, ram, capacity, sold_date FROM sold_laptops")
     sold_laptops = cursor.fetchall()
-    cursor.close()
 
     laptops = []
     for laptop in sold_laptops:
@@ -99,7 +101,7 @@ def get_sold_laptops():
             "sold_date": formatted_date
         })
 
-    return jsonify(laptops)       
+    return jsonify(laptops)
 
 if __name__ == '__main__':
     app.run(debug=True)
