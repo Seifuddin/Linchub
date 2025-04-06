@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 # 🔗 Remote Database connection (update these values)
 db = mysql.connector.connect(
-    host="sql7.freesqldatabase.com",     # <-- replace with your DB host
-    user="sql7771691",            # <-- replace with your DB username
-    password="PvMsXEv6BW",        # <-- replace with your DB password
-    database="sql7771691",            # <-- replace with your DB name
-    port=3306                           # optional, 3306 is default
+    host=os.environ.get("DB_HOST"),
+    user=os.environ.get("DB_USER"),
+    password=os.environ.get("DB_PASSWORD"),
+    database=os.environ.get("DB_NAME")
 )
 
 cursor = db.cursor()
