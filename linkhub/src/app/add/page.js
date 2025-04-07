@@ -20,7 +20,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     
-    const res = await fetch("http://localhost:5000/add_computer", {
+    const res = await fetch("https://linkhub-798k.onrender.com/add_computer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ brand, name, processor, ram, capacity, shelf, serial }),
@@ -32,7 +32,7 @@ export default function Home() {
   };
 
   return (
-    <div className="mt-10 min-h-screen bg--100 flex flex-col items-center p-6 mt-14 bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="min-h-screen bg--100 flex flex-col items-center p-6 mt-14 bg-gradient-to-r from-blue-500 to-purple-600">
       {/* Navigation */}
       <nav className="w-full max-w-3xl bg-white shadow-md p-4 flex justify-between rounded-xl mb-6">
         <h1 className="text-xl font-bold text-orange-600">Computer Inventory</h1>

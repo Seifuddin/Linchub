@@ -20,7 +20,7 @@ export default function SearchPage() {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:5000/search_computers?name=${searchTerm}`);
+      const res = await fetch(`https://linkhub-798k.onrender.com/search_computers?name=${searchTerm}`);
       if (!res.ok) throw new Error("Failed to fetch computers");
 
       const data = await res.json();
@@ -40,7 +40,7 @@ export default function SearchPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/delete_computer/${selectedComputer}`, {
+      const res = await fetch(`https://linkhub-798k.onrender.com/delete_computer/${selectedComputer}`, {
         method: "DELETE",
       });
 

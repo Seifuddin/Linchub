@@ -10,7 +10,7 @@ export default function SoldLaptopsPage() {
   useEffect(() => {
     async function fetchSoldLaptops() {
       try {
-        const res = await fetch("http://localhost:5000/sold_laptops"); // Backend API
+        const res = await fetch("https://linkhub-798k.onrender.com/sold_laptops"); // Backend API
         if (!res.ok) throw new Error("Failed to fetch sold laptops");
 
         const data = await res.json();
